@@ -10,6 +10,7 @@ class SavingController extends Controller
     {
         // Retrieve all savings
         $savings = Savings::all();
+        // dd($savings);
         return view('savings.index', compact('savings'));
     }
 

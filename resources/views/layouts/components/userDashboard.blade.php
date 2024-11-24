@@ -58,14 +58,15 @@
             <hr>
             <div class="mt-4">
                 <h5 class="text-sm sm:text-md font-semibold text-gray-600">You can get up to:</h5>
-                <p class="text-lg sm:text-xl font-bold">TZS 100,000</p>
+                <p class="text-lg sm:text-xl font-bold">TZS 1,000,000</p>
             </div>
             <p class="text-sm text-gray-500 mt-2 mb-4">
                 Apply for a quick loan to help you meet your financial needs.
             </p>
-            <button class="bg-blue-500 w-full text-white font-bold text-base sm:text-lg px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center">
+            <a href="{{ route('loans.create') }}" 
+                class="bg-blue-500 w-full text-white font-bold text-base sm:text-lg px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center">
                 <i class="fas fa-hand-holding-usd mr-2"></i> Apply Now
-            </button>
+            </a >
         </div>
     </div>
 </div>

@@ -26,7 +26,7 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         // Validate and process the incoming data
-        $validated = $request->validate([
+        $validated = $request->validate(rules: [
             'setting_name' => 'required|string|max:255',
             // Add other settings fields here
         ]);

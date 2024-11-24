@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loans_cartegories', function (Blueprint $table) {
-            $table->id();
+        Schema::create('loansCartegories', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('loanName');
             $table->decimal('minAmount',15,2)->default(2);
             $table->decimal('maxAmount',15,2)->default(2);
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loans_cartegories');
+        //
     }
 };

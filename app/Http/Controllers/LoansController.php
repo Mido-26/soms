@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Loans;
 use Illuminate\Http\Request;
+use App\Models\LoansCartegory;
+use Illuminate\Support\Facades\Auth;
 
 class LoansController extends Controller
 {
@@ -11,7 +14,9 @@ class LoansController extends Controller
      */
     public function index()
     {
-        //
+        $loans = Loans::all();
+        // dd($loans->user)
+        return view('loans.index', compact('loans'));
     }
 
     /**
@@ -19,7 +24,8 @@ class LoansController extends Controller
      */
     public function create()
     {
-        //
+        $availableLoans = LoansCartegory::all();
+        return view('loans.create', compact('availableLoans'));
     }
 
     /**
@@ -27,7 +33,18 @@ class LoansController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
+        $userId = Auth::user()->id;
+        $loans = Loans::create( [
+            'duration_in_days' => $request->repayment_period,
+            'principal_amount' => $request->loan_amount,
+            'amount' => $request->loan_amount,
+            'interest_rate' => $request->interest_rate,
+            'user_id' => $userId,
+            'loansCategory_id' => $request->loan_id,
+            'description' => $request->loan_id
+        ]);
+        return redirect()->route('loans.index')->with('success', 'Loan applied successfully.');
     }
 
     /**

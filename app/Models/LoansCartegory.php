@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LoansCartegory extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'loanName',
         'minAmount',
@@ -15,6 +17,6 @@ class LoansCartegory extends Model
     ];
 
     public function loans(){
-       return $this->hasMany('loans');
+       return $this->hasMany(Loans::class);
     }
 }

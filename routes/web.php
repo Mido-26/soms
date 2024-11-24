@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/loans', [LoansController::class, 'index'])->name('loans.index');
     Route::get('/loans/pending', [LoansController::class, 'pending'])->name('loans.pending');
     Route::get('/loans/approved', [LoansController::class, 'approved'])->name('loans.approved');
-    // Route::resource('loans', LoansController::class);
+    Route::resource('loans', LoansController::class);
 
     Route::get('/unauthorized', function () {
         return view('403');
