@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class LoginController extends Controller
@@ -40,4 +42,33 @@ class LoginController extends Controller
         return redirect()->route('login');  // Redirect to login page
     }
     
+    public function showLinkRequestForm()
+    {
+        return view('auth.forgot-password');  // Return the forgot password view
+    }
+    public function sendResetLinkEmail(Request $request)
+    {
+        // Validate the email input
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        // If validation fails, redirect back with errors
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Send the reset link via email using Laravel's built-in Password broker
+        $response = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        // Check if the reset link was sent successfully
+        if ($response == Password::RESET_LINK_SENT) {
+            return back()->with('status', 'We have e-mailed your password reset link!');
+        }
+
+        // If there was an issue sending the reset link, show a failure message
+        return back()->withErrors(['email' => 'Failed to send reset link. Please try again.']);
+    }
 }

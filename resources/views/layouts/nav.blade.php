@@ -52,6 +52,10 @@
                     {{ request()->is('savings', 'savings/*') ? 'border-l-4 border-green-700 bg-green-100 text-green-700' : '' }}">
                 <i class="fa-solid fa-piggy-bank mr-2"></i> Savings
             </a>
+            
+            
+            @endif
+            
             <!-- Loans with Dropdown -->
             <div>
                 <!-- Main Button -->
@@ -65,7 +69,7 @@
                 <!-- Dropdown Content -->
                 <div id="loansDropdown" class="hidden pl-0 space-y-2 bg-gray-100 transition-all">
                     <!-- All Loans -->
-                    <a href="{{ route('inprogress') }}" 
+                    <a href="{{ route('loans.index') }}" 
                        class="flex items-center py-2 px-4 text-sm text-gray-600 hover:bg-gray-200 rounded transition">
                         <i class="fa-solid fa-list mr-1 text-xs"></i> All Loans
                     </a>
@@ -86,10 +90,6 @@
                     </a>
                 </div>
             </div>
-            
-            @endif
-            
-            
 
             
 

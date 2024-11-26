@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Loans;
 use Illuminate\Http\Request;
-use App\Models\LoansCartegory;
+use App\Models\LoanCartegory;
 use Illuminate\Support\Facades\Auth;
 
 class LoansController extends Controller
@@ -14,7 +14,7 @@ class LoansController extends Controller
      */
     public function index()
     {
-        $loans = Loans::all();
+        $loans = Loans::paginate(10);
         // dd($loans->user)
         return view('loans.index', compact('loans'));
     }
@@ -24,7 +24,7 @@ class LoansController extends Controller
      */
     public function create()
     {
-        $availableLoans = LoansCartegory::all();
+        $availableLoans = LoanCartegory::all();
         return view('loans.create', compact('availableLoans'));
     }
 
@@ -33,26 +33,41 @@ class LoansController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $userId = Auth::user()->id;
         $loans = Loans::create( [
             'duration_in_days' => $request->repayment_period,
             'principal_amount' => $request->loan_amount,
-            'amount' => $request->loan_amount,
+            'amount' => $request->return_amount,
             'interest_rate' => $request->interest_rate,
             'user_id' => $userId,
-            'loansCategory_id' => $request->loan_id,
-            'description' => $request->loan_id
+            'loancartegories_id' => $request->loan_id,
+            'description' => $request->loan_purpose
         ]);
         return redirect()->route('loans.index')->with('success', 'Loan applied successfully.');
     }
 
+    public function changeStatus(Request $request, Loans $loan)
+{
+    $request->validate([
+        'status' => 'required|in:pending,approved,rejected,disbursed',
+    ]);
+
+    $loan->status = $request->status;
+    $loan->save();
+
+    return redirect()->route('loans.show', $loan->id)
+        ->with('success', 'Loan status updated successfully.');
+}
+
+
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Loans $loan)
     {
-        //
+        // dd($loan);
+        return view('loans.show', compact('loan'));
     }
 
     /**

@@ -1,56 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Middleware;
 use App\Models\Savings;
+use App\Http\Middleware;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 // use DB;
 class TransactionsController extends Controller
 {
     
     public function index(Request $request)
 {
+    $role = session('role');
     $query = Transactions::query();
-
-    // Filter by Transaction ID
-    if ($request->filled('transaction_id')) {
-        $query->where('id', $request->input('transaction_id'));
+    if ($role == 'admin' || $role == 'staff'){
+        
+    }else{
+        $id = Auth::user()->id;
+        $query->where('user_id', '=', $id);
     }
+    // $query = Transactions::query();
 
-    // Filter by Account Owner (Assuming `user` relationship exists)
-    if ($request->filled('account_owner')) {
-        $query->whereHas('user', function ($q) use ($request) {
-            $q->where('first_name', 'like', '%' . $request->input('account_owner') . '%')
-              ->orWhere('last_name', 'like', '%' . $request->input('account_owner') . '%');
-        });
-    }
-
-    // Filter by Amount
-    if ($request->filled('amount')) {
-        $query->where('amount', '>=', $request->input('amount'));
-    }
-
-    // Filter by Transaction Type
-    if ($request->filled('type')) {
-        $query->where('type', $request->input('type'));
-    }
-
-    // Filter by Date (assuming `created_at` as transaction date)
-    if ($request->filled('date')) {
-        $query->whereDate('created_at', $request->input('date'));
-    }
 
     // Paginate and get filtered results
     $transactions = $query->orderBy('id', 'desc')->paginate(10);
-
+    // dd($transactions);
+    $total = 0;
+        foreach ($transactions as $transaction) {
+            $total = $total + $transaction->amount;
+        }
     // Pass the request inputs to the view to retain selected filters
-    return view('transactions.index', compact('transactions'))->withInput($request->all());
+    return view('transactions.index', compact('transactions', 'total'))->withInput($request->all());
 }
 
 
     public function create(){
+         if (Auth::user()->role == 'admin') {
+                return redirect()->route('unauthorized');
+            }
         $savingsAccounts = Savings::with('user')->get();
         return view('transactions.create', compact('savingsAccounts'));
     }
@@ -59,6 +48,9 @@ class TransactionsController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('unauthorized');
+        }
         // dd($request->all());
         // Validate the request
         $request->validate([
@@ -115,7 +107,10 @@ class TransactionsController extends Controller
     }
 
     public function show(Transactions $transaction){
-        // dd($transaction);
+        // dd(Auth::user());
+        if (Auth::user()->role == 'admin' || $transaction->user_id === Auth::id()) {
+            return redirect()->route('unauthorized');
+        }
         return view('transactions.show', compact('transaction'));
     }
 
@@ -127,6 +122,9 @@ class TransactionsController extends Controller
 
     public function update(Request $request, $id)
 {
+    if (Auth::user()->role == 'admin') {
+        return redirect()->route('unauthorized');
+    }
     // Validate the request
     $request->validate([
         'amount' => 'required|numeric|min:0.01',

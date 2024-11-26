@@ -16,12 +16,12 @@ class Loans extends Model
         'interest_rate',
         'status',
         'user_id',
-        'loansCategory_id',
+        'loancartegories_id',
         'description'
     ];
 
     public function loanscartegory(){
-        return $this->belongsTo(LoansCartegory::class);
+        return $this->belongsTo(Loancartegory::class, 'loancartegories_id','id','');
     }
     public function user(){
         return $this->belongsTo(User::class);

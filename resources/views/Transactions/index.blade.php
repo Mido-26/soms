@@ -5,7 +5,7 @@
     <div class="container mx-auto px-4">
         <!-- Header -->
         <div class="flex items-center justify-between my-4">
-            <h2 class="text-xl font-semibold text-gray-800">Total Transaction Amount: <span class="text-green-600"> TZS</span>
+            <h2 class="text-xl font-semibold text-gray-800">Total Transaction Amount: <span class="text-green-600">{{ number_format($total, 2)}} TZS</span>
             </h2>
                 <a href="{{ route('transactions.create') }}" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-800">
                     <i class="fa-solid fa-circle-plus mr-2"></i> Make New Transaction

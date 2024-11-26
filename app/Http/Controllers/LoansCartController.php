@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LoansCartegory;
+use App\Models\LoanCartegory;
 use Illuminate\Http\Request;
 
 class LoansCartController extends Controller
 {
     public function index(){
         
-        $loanCategories = LoansCartegory::all();
+        $loanCategories = Loancartegory::all();
         // dd($loanCategories);
         return view('loan-categories.index', compact('loanCategories'));
     }
@@ -29,7 +29,7 @@ class LoansCartController extends Controller
             'maxAmount' => 'required|numeric|gt:minAmount', // Ensure max amount is numeric and greater than minAmount
     ]);
 
-    LoansCartegory::create($validated);
+    Loancartegory::create($validated);
 
     // Redirect to the index page with a success message
     return redirect()->route('loan-categories.index')
@@ -38,7 +38,7 @@ class LoansCartController extends Controller
 
     public function edit(string $id){
 
-        $loanCart = LoansCartegory::findOrFail($id);
+        $loanCart = Loancartegory::findOrFail($id);
         // dd($loanCart);
         
         return view('loan-categories.edit', compact('loanCart'));
@@ -46,14 +46,14 @@ class LoansCartController extends Controller
 
     public function show(string $id)
     {
-        $loanCategory = LoansCartegory::findOrFail($id);
+        $loanCategory = Loancartegory::findOrFail($id);
         return view('loan-categories.show', compact('loanCategory'));
     }
 
     public function update(Request $request, string $id){
 
         // dd($request->all());
-        $loansCartegory = LoansCartegory::findOrFail($id);
+        $loansCartegory = Loancartegory::findOrFail($id);
         $validated = $request->validate([
             'loanName' => 'required|string|max:255', // Ensure loan name is a string and not too long
             'interest' => 'required|numeric|between:0,100', // Validate interest as a percentage (0-100)

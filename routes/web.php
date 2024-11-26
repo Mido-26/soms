@@ -8,12 +8,13 @@ use App\Http\Controllers\SavingController;
 use App\Http\Controllers\MembersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Middleware\CheckAccountStatus;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoansCartController;
 use App\Http\Controllers\TransactionsController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', CheckAccountStatus::class])->group(function () {
     // Change logout route to POST method
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
@@ -34,10 +35,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('loan-categories', LoansCartController::class);   
     });
 
-    Route::get('/loans', [LoansController::class, 'index'])->name('loans.index');
+    // Route::get('/loans', [LoansController::class, 'index'])->name('loans.index');
     Route::get('/loans/pending', [LoansController::class, 'pending'])->name('loans.pending');
     Route::get('/loans/approved', [LoansController::class, 'approved'])->name('loans.approved');
     Route::resource('loans', LoansController::class);
+    Route::patch('/loans/{loan}/change-status', [LoansController::class, 'changeStatus'])->name('loans.changeStatus');
 
     Route::get('/unauthorized', function () {
         return view('403');
@@ -60,11 +62,25 @@ Route::get('/development-not-available', function() {
     return view('inprogress');
 })->name('inprogress');
 });
+
+Route::middleware('auth')->group( function(){
+    Route::get('/inactive', function () {
+        return view('inactive');
+    })->name('inactive');
+    
+    Route::get('/support', function () {
+        return view('support');
+    })->name('support');
+    
+});
+
 // Route::resource('members', MembersController::class);
 // Login routes
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('forgot-password', [LoginController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
 // Route::get('/unauthorized', function () {
 //     return view('403');
 // })->name('unauthorized');

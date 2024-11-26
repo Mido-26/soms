@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('loansCategory_id')->constrained('loansCartegories')->onDelete('cascade');
+            $table->foreignId('loancartegories_id')->constrained('loancartegories')->onDelete('restrict');
             $table->integer('duration_in_days'); // Store duration in days
             $table->decimal('principal_amount', 10, 2); // Loan principal amount
             $table->decimal('amount', 10, 2); // Loan amount
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('loans');
     }
 };
